@@ -1,5 +1,5 @@
 ---
 ansible_password: default
 docker_manager_password: default
-ansible_key: ansible
-docker_key: ansible
+ansible_key: keys/ansible.pub
+docker_key: keys/ansible.pub

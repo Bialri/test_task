@@ -1,0 +1,4 @@
+web:
+  hosts:
+    89.110.88.81:
+      ansible_user: root

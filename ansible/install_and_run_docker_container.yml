@@ -1,0 +1,59 @@
+---
+- name: Setup application
+  hosts: all
+  roles:
+    - create_users_group_deploy_keys
+
+  tasks:
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+
+    - name: add docker GPG apt key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: add docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name:  install docker
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: true
+
+    - name: install docker package for python
+      pip:
+        name: docker
+
+- name: Run app container
+  hosts: all
+  remote_user: docker
+  vars:
+    app_image_name: bialri/test_image:latest
+    app_container_name: app
+
+  tasks:
+    - name: pull app image
+      community.docker.docker_image:
+        name: "{{ app_image_name }}:latest"
+        source: pull
+
+    - name: Create default container
+      community.docker.docker_container:
+        name: "{{ app_container_name }}"
+        image: "{{ app_image_name }}"
+        ports:
+          - "8000:8000"
+        state: started

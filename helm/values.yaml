@@ -1,0 +1,31 @@
+
+appName: testapp
+appPort: 8000
+
+Deployment:
+  name: testdeployment
+
+  replicas: 2
+
+  container:
+    name: testapp
+    image: bialri/test_image:latest
+
+Service:
+  name: testservice
+  port: 80
+
+Ingress:
+  name: testingres
+  class: "nginx"
+
+  hosts:
+    - domain
+
+Storage:
+  pv_name: test-pv
+  driver: efs.csi.aws.com
+  volumeHandle: FileSystemId
+  size: 1Gi
+
+  pvc_name: test-pvc

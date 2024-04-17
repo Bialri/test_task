@@ -15,6 +15,7 @@ def response_success():
 def ping_dns():
     while True:
         subprocess.call(['ping', '1.1.1.1', '-c', '1'])
+        subprocess.call(['ping', '8.8.8.8', '-c', '1'])
         time.sleep(5)
 
 

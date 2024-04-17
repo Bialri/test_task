@@ -1,0 +1,1 @@
+helm install prometheus-blackbox prometheus-community/prometheus-blackbox-exporter -f ./values.yaml

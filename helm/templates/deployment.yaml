@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.Deployment.name }}
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  replicas: {{ .Values.Deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+        - name: {{ .Values.Deployment.container.name }}
+          image: {{ .Values.Deployment.container.image }}
+          volumeMounts:
+            - mountPath: /mnt
+              name: teststorage
+          ports:
+            - containerPort: {{ .Values.appPort }}
+      volumes:
+        - name: teststorage
+          persistentVolumeClaim:
+            claimName: {{ .Values.Storage.pvc_name }}

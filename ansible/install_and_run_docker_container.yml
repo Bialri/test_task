@@ -1,13 +1,25 @@
 ---
 - name: Setup application
   hosts: all
+  become: true
+  vars:
+    ansible_key: ~/keys/ansible.pub
+    docker_key: ~/keys/ansible.pub
   roles:
     - create_users_group_deploy_keys
 
   tasks:
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+        force_apt_get: true
+
     - name: Install required system packages
       apt:
         pkg:
+          - python3
           - apt-transport-https
           - ca-certificates
           - curl
@@ -15,6 +27,7 @@
           - python3-pip
           - virtualenv
           - python3-setuptools
+          - linux-generic-hwe-18.04
         state: latest
 
     - name: add docker GPG apt key
@@ -24,7 +37,7 @@
 
     - name: add docker repository
       apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
         state: present
 
     - name:  install docker
@@ -39,7 +52,8 @@
 
 - name: Run app container
   hosts: all
-  remote_user: docker
+  remote_user: docker_manager
+  become: true
   vars:
     app_image_name: bialri/test_image:latest
     app_container_name: app

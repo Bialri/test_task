@@ -1,28 +1,26 @@
 - name: Add deployers group
+  become: true
   group:
     name: deployers
     state: present
 
 - name: Add docker group
+  become: true
   group:
     name: docker
     state: present
 
 - name: Add docker_manager user
+  become: true
   user:
     name: docker_manager
     password: "{{ docker_manager_password }}"
     groups: [ 'docker','deployers' ]
-
-
-- name: set ansible user key
-  authorized_key:
-    user: ansible
-    key: "{{ item }}"
-  with_file: keys/{{ ansible_key }}.pub
+    shell: /bin/bash
 
 - name: set docker_manager user key
+  become: true
   authorized_key:
     user: docker_manager
     key: "{{ item }}"
-  with_file: keys/{{ docker_key }}.pub
+  with_file: "{{ docker_key }}"
